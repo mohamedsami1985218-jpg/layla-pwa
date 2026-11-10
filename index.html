@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#211523">
+  <meta name="description" content="ليلى - صديقتك الافتراضية">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>ليلى ❤️</title>
+  <style>
+    :root{color-scheme:dark;--bg:#170f19;--panel:#281b2b;--pink:#f28ab5;--text:#fff5fa;--muted:#c9b5c3}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#45263d,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+    .app{max-width:720px;margin:auto;min-height:100vh;display:flex;flex-direction:column;padding:14px;padding-bottom:env(safe-area-inset-bottom)}
+    header{display:flex;align-items:center;gap:12px;padding:8px 4px 14px}
+    .avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--pink)}
+    h1{font-size:21px;margin:0}.status{color:#9fe6b4;font-size:13px}
+    .hero{background:var(--panel);border:1px solid #58384f;border-radius:22px;overflow:hidden}
+    .portrait{width:100%;max-height:390px;object-fit:cover;display:block;object-position:center 35%}
+    .intro{padding:13px 16px;color:var(--muted);font-size:14px;line-height:1.7}
+    .chat{display:flex;flex-direction:column;gap:10px;padding:16px 2px;flex:1;min-height:180px}
+    .bubble{max-width:85%;padding:11px 14px;border-radius:18px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+    .her{align-self:flex-start;background:#342437;border:1px solid #573d58;border-bottom-left-radius:5px}
+    .me{align-self:flex-end;background:#873e68;border-bottom-right-radius:5px}
+    .composer{display:flex;gap:8px;position:sticky;bottom:0;background:#170f19;padding:10px 0}
+    input{min-width:0;flex:1;background:#2a1d2d;border:1px solid #67445f;border-radius:18px;padding:13px;color:white;font:inherit;outline:none}
+    button{border:0;border-radius:18px;background:var(--pink);color:#351629;font-weight:700;padding:0 17px;font:inherit}
+    .tools{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;padding:0 2px 10px}
+    .clear{background:transparent;color:#f4b5d0;border:1px solid #67445f;padding:7px 12px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <img class="avatar" src="assets/layla.png" alt="صورة ليلى">
+    <div><h1>ليلى ❤️</h1><div class="status">متاحة للدردشة التجريبية</div></div>
+  </header>
+  <section class="hero">
+    <img class="portrait" src="assets/layla.png" alt="الصورة الافتراضية لليلى">
+    <div class="intro">أهلًا! أنا ليلى 😊 دي نسخة أولية للتجربة. أقدر أحتفظ برسائلنا على نفس الجهاز، لكن ردودي هنا تجريبية وليست ذكاءً اصطناعيًا متصلًا بعد.</div>
+  </section>
+  <main class="chat" id="chat" aria-live="polite"></main>
+  <div class="tools"><span>المحادثات محفوظة على هذا الجهاز</span><button class="clear" id="clear">مسح المحادثة</button></div>
+  <form class="composer" id="form">
+    <input id="message" autocomplete="off" placeholder="اكتب رسالة لليلى..." aria-label="رسالتك">
+    <button type="submit">إرسال</button>
+  </form>
+</div>
+<script>
+const chat=document.querySelector('#chat'), form=document.querySelector('#form'), input=document.querySelector('#message');
+const KEY='layla-chat-v1';
+let messages=[];
+try{messages=JSON.parse(localStorage.getItem(KEY)||'[]')}catch{messages=[]}
+function draw(){
+  chat.innerHTML='';
+  if(!messages.length) messages=[{who:'her',text:'أهلًا بيك ❤️ عامل إيه النهارده؟'}],save();
+  for(const m of messages){const d=document.createElement('div');d.className='bubble '+(m.who==='me'?'me':'her');d.textContent=m.text;chat.appendChild(d)}
+  chat.scrollTop=chat.scrollHeight;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(messages))}
+form.addEventListener('submit',e=>{
+  e.preventDefault();const text=input.value.trim();if(!text)return;
+  messages.push({who:'me',text});input.value='';
+  messages.push({who:'her',text:'وصلتني رسالتك 😊 النسخة دي لسه تجريبية. في الخطوة التالية هنربط ليلى بخدمة ذكاء اصطناعي عشان ترد عليك بشكل طبيعي.'});
+  save();draw();
+});
+document.querySelector('#clear').addEventListener('click',()=>{
+  if(confirm('تمسح كل المحادثة المحفوظة على هذا الجهاز؟')){messages=[];save();draw()}
+});
+draw();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}
+</script>
+</body></html>

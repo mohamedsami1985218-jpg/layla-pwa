@@ -1,0 +1,11 @@
+{
+  "name": "ليلى - صديقتك الافتراضية",
+  "short_name": "ليلى",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#170f19",
+  "theme_color": "#211523",
+  "icons": []
+}
